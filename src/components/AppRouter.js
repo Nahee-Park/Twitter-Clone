@@ -1,10 +1,9 @@
 import React from "react";
-import Home from "./routes/Home";
-import Auth from "./routes/Auth";
+import Home from "routes/Home";
+import Auth from "routes/Auth";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-function AppRouter() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(False);
+function AppRouter({ isLoggedIn }) {
   return (
     <BrowserRouter>
       <Route exact path="/">
