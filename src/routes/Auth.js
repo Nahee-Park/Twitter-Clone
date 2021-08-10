@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [timer, setTimer] = useState(0);
   const onChange = (event) => {
     const {
       target: { name, value },
     } = event;
     if (name === "email") {
-      setEmail(value);
+      if (timer) {
+        console.log("clear timer");
+        clearTimeout(timer);
+      }
+      const newTimer = setTimeout(() => {
+        setEmail(value);
+        setTimer(newTimer);
+      }, 500);
       console.log(email);
     } else if (name === "password") {
-      setPassword(value);
+      if (timer) {
+        clearTimeout(timer);
+      }
+      const newTimer = setTimeout(() => {
+        setPassword(value);
+        setTimer(newTimer);
+      }, 500);
       console.log(password);
     }
   };
+
   const onSubmit = (event) => {
     event.preventDefault();
   };
@@ -27,7 +42,7 @@ function Auth() {
           type="text"
           placeholder="Email"
           required
-          value={email}
+          // value={email}
           onChange={onChange}
         />
         <input
@@ -35,7 +50,6 @@ function Auth() {
           type="password"
           placeholder="Password"
           required
-          value={password}
           onChange={onChange}
         />
         <input type="submit" value="Log In" />
