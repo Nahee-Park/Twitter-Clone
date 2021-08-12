@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { authService } from "fbase";
+import { authService, firebaseInstance } from "fbase";
 
 function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [timer, setTimer] = useState(0);
   const [newAccount, setNewAccount] = useState(false);
+  const [error, setError] = useState("");
   const onChange = (event) => {
     const {
       target: { name, value },
@@ -18,7 +19,7 @@ function Auth() {
       const newTimer = setTimeout(() => {
         setEmail(value);
         setTimer(newTimer);
-      }, 500);
+      }, 100);
       console.log(email);
     } else if (name === "password") {
       if (timer) {
@@ -27,7 +28,7 @@ function Auth() {
       const newTimer = setTimeout(() => {
         setPassword(value);
         setTimer(newTimer);
-      }, 500);
+      }, 100);
       console.log(password);
     }
   };
@@ -46,12 +47,31 @@ function Auth() {
           email,
           password
         );
-        setNewAccount(true);
         console.log(data);
       }
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
+  };
+  const onSocialClick = async (event) => {
+    const {
+      target: { name },
+    } = event;
+    if (name == "google") {
+      // provider는 firebase에 접근해서 받음
+      const provider = new firebaseInstance.auth.GoogleAuthProvider();
+      // authService에 접근해서 팝업 방식으로 로그인하는 방식을 따름
+      const data = await authService.signInWithPopup(provider);
+      console.log(data);
+    } else if (name == "github") {
+      const provider = new firebaseInstance.auth.GithubAuthProvider();
+      const data = await authService.signInWithPopup(provider);
+      console.log(data);
+    }
+  };
+  const toggleAccount = () => {
+    // 값을 받아서 반대값으로 리턴
+    setNewAccount((prev) => !prev);
   };
   return (
     <div>
@@ -71,11 +91,22 @@ function Auth() {
           required
           onChange={onChange}
         />
-        <input type="submit" value={newAccount ? "Log In" : "Create Account"} />
+        <input
+          type="submit"
+          value={newAccount ? "Sign In" : "Create Account"}
+        />
+        {error}
       </form>
+      <span onClick={toggleAccount}>
+        {newAccount ? "Create Account" : "Sign In"}
+      </span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button onClick={onSocialClick} name="google">
+          Continue with Google
+        </button>
+        <button onClick={onSocialClick} name="github">
+          Continue with Github
+        </button>
       </div>
     </div>
   );
