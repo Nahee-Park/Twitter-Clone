@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Nav from "./Nav";
 import Profile from "routes/Profile";
 
-function AppRouter({ isLoggedIn }) {
+function AppRouter({ isLoggedIn, userObj }) {
   return (
     <BrowserRouter>
       {isLoggedIn && <Nav />}
@@ -13,7 +13,7 @@ function AppRouter({ isLoggedIn }) {
         {isLoggedIn ? (
           <div>
             <Route exact path="/">
-              <Home />
+              <Home userObj={userObj} />
             </Route>
             <Route exact path="/profile">
               <Profile />
